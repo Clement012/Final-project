@@ -1,0 +1,61 @@
+  
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+   <title>5-Minute Stock Price Chart</title> 
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/stock.js"></script>
+  <script src="https://code.highcharts.com/modules/series-label.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+
+<body>
+   <h1>5-Minute Stock Price Chart</h1> 
+  <div id="stockChart" style="width: 500px; height: 600px;"></div>
+  <script type="text/javascript">
+    function updateChart(){
+    fetch('/try')
+      .then(response => response.json())
+      .then(data => {
+        const processedData = data.map(item => [new Date(item.time).getTime(), item.regularMarketPrice]);
+
+    
+
+        Highcharts.stockChart('stockChart', {
+          rangeSelector: {
+            selected: 1
+          },
+          title: {
+            text: '5-Minute Stock Price'
+          },
+          time: {
+            timezone: 'Asia/Hong_Kong'
+          },
+          // xAxis: {
+          //   type: 'datetime',
+          //   labels: {
+          //     formatter: function () {
+          //       return Highcharts.dateFormat('%H:%M:%S', this.value);
+          //     }
+          //   }
+          // },
+          series: [{
+            name: 'Price',
+            data: processedData,
+            tooltip: {
+              valueDecimals: 2
+            }
+          }]
+        });
+      });
+    }
+    updateChart();
+    setInterval(updateChart, 3000);
+
+  </script>
+</body> 
+
+</html> 
