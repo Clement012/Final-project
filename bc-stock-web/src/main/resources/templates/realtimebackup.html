@@ -4,6 +4,7 @@
 
 <head>
   <!-- <title>5-Minute Stock Price Chart</title> -->
+   
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/modules/stock.js"></script>
   <script src="https://code.highcharts.com/modules/series-label.js"></script>
@@ -11,9 +12,11 @@
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
-  <title>Stock Data</title>
+  <title>0388.HK Stock Data</title>
   <style> 
   .bid-ask-table { 
+    width: 500px; 
+    height: 100px;
     border-collapse: collapse; 
     font-size: 24px; font-weight: 
     bold; 
@@ -22,6 +25,7 @@
   .bid-ask-table td { 
     padding: 10px; 
     border: 2px solid #000; 
+    text-align: center;
     } 
   .bid-ask-table th { 
     background-color: #333; 
@@ -49,7 +53,7 @@
      
 <body>
   <!-- <h1>5-Minute Stock Price Chart</h1> -->
-  <div id="stockChart" style="width: 500px; height: 600px;"></div>
+  <div id="stockChart" style="width: 900px; height: 600px;"></div>
   <script type="text/javascript">
     function updateChart(){
   const fetchFiveMinutes = fetch('/five-minute')
@@ -114,8 +118,30 @@ function updateBidAsk() {
 
     updateData();
     setInterval(updateData, 10000);
-
   </script>
+  
+<body>
+  <h1>Setting</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Minute</th>
+        <td>5-Min</td>
+      </tr>
+      <tr>
+        <th>Daily</th>
+        <td>1-Month</td>
+      </tr>
+      <tr>
+        <th>Weekly</th>
+        <td>1-Year</td>
+      </tr>
+      <tr>
+        <th>Monthly</th>
+        <td>5-Years</td>
+      </tr>
+    </thead>
+  </table>
 </body>
 
-</html>
+</html> 

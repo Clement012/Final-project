@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,38 +19,28 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.example.sb.bc_yahoo_finance.dto.ResultDTO;
-import com.example.sb.bc_yahoo_finance.dto.ResultEntityDTO;
-import com.example.sb.bc_yahoo_finance.entity.ResultEntity;
 import com.example.sb.bc_yahoo_finance.infra.GlobalConstants;
-import com.example.sb.bc_yahoo_finance.mapper.ResultEntityMapper;
-import com.example.sb.bc_yahoo_finance.mapper.ResultMapper;
 import com.example.sb.bc_yahoo_finance.model.Response;
-import com.example.sb.bc_yahoo_finance.model.Response.QuoteResponse;
-import com.example.sb.bc_yahoo_finance.model.Response.QuoteResponse.Result;
-import com.example.sb.bc_yahoo_finance.repository.StockDataRepository;
+import com.example.sb.bc_yahoo_finance.service.RealTimeDataService;
 import com.example.sb.bc_yahoo_finance.service.StockDataServiceHKE;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class StockDataServiceHKEImpl implements StockDataServiceHKE{
-  
-  // @Value(value = "${api.query1-finance-yahoo.domain}") 
-  // private String domain;  
-
-  // @Value(value = "${api.query1-finance-yahoo.endpoints.finance}")
-  // private String userEndpoint;
+public class RealTimeDataImpl implements RealTimeDataService {
 
   @Autowired
   private RestTemplate restTemplate;
 
-  @Autowired
-  private StockDataRepository stockDataRepository;
+  @Value("${api.yahoo-finance.domain}")
+  private String domain;
 
-  @Autowired
-  private ResultEntityMapper resultEntityMapper;
-  
-  private final static Logger log = LoggerFactory.getLogger(StockDataServiceHKE.class);
+  @Value("${api.yahoo-finance.endpoint}")
+  private String[] endpoints;
+
+  @Value("${api.yahoo-finance.crumb}")
+  private String crumbWord;
+
+  private final static Logger log = LoggerFactory.getLogger(RealTimeDataService.class);
 
   public static String crumb = null; 
   public static String cookie = null; 
@@ -113,12 +104,16 @@ public class StockDataServiceHKEImpl implements StockDataServiceHKE{
 
   @Override
   public List<Response> getResponse() {
+    List<Response> responses = new ArrayList<>();
     String crumb = getCrumb();
-    // System.out.println("Crumb="+ crumb);
+    System.out.println("Crumb="+ crumb);
     String cookie = getCookie();
-    // System.out.println("Cookie="+ cookie);
-    String url = String.format("https://query1.finance.yahoo.com/v7/finance/quote?symbols=0388.HK&crumb=%s", crumb);
-
+    System.out.println("Cookie="+ cookie);
+    
+    for (String endpoint : endpoints) {
+      // Construct URL
+      String url = String.format("https://%s%s%s%s", domain, endpoint, crumbWord, crumb);
+      System.out.println("url=" + url);
     try {
         // Create HttpHeaders object to set the Cookie and User-Agent headers
         HttpHeaders headers = new HttpHeaders();
@@ -132,36 +127,17 @@ public class StockDataServiceHKEImpl implements StockDataServiceHKE{
         String responseBody = responseEntity.getBody();
         // Extract the body from the response
         ObjectMapper objectMapper = new ObjectMapper();
-        Response responseArray = objectMapper.readValue(responseBody, Response.class); 
+        Response response = objectMapper.readValue(responseBody, Response.class); 
+        responses.add(response);
         // Return the response as a list
-        return Arrays.asList(responseArray);
     } catch (Exception e) {
         log.error("Failed to get response from Yahoo Finance", e);
         return Collections.emptyList(); 
-    }
-}
-   @Override
-   public void saveStockData(){
-      List<Response> responses = getResponse();
-      // List<ResultEntityDTO> dtoList = new ArrayList<>();
-    for (Response response : responses) {
-        QuoteResponse quoteResponse = response.getQuoteResponse();
-        if (quoteResponse != null) {
-            Result[] results = quoteResponse.getResult();
-            if (results != null) {
-                     Arrays.stream(results)
-                    .map(r -> resultEntityMapper.map(r)) 
-                    .forEach(r -> stockDataRepository.save(r));
-                // stockDataRepository.saveAllAndFlush(dto);  //map as Entity.
-            }
-        }
      }
    }
-   @Override
-   public void deleteData(){
-    List<ResultEntity> result = stockDataRepository.findAll();
-      if (result.size() > 0){
-        stockDataRepository.deleteAll();
-      }
-   }
+   return responses;
+  }
 }
+
+
+

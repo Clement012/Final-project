@@ -1,13 +1,15 @@
+
 server :
   port : 8096
 
 api:
-  query1-finance-yahoo:
-    domain: 'query1.finance.yahoo.com/v7/finance/quote'
-    endpoints:
-      - '?symbols=0388.HK&'
-      - '?symbols=0700.HK&'
-  
+  yahoo-finance:
+    domain: 'query1.finance.yahoo.com/v7/finance/quote?symbols='
+    endpoint: '0005.HK,0011.HK,0066.HK,0388.HK,0700.HK,0823.HK,0941.HK,1810.HK,3690.HK,9988.HK'
+    crumb: '&crumb='
+
+    
+  # https://query1.finance.yahoo.com/v7/finance/quote?symbols=0388.HK&crumb=
      # finance: '/v7/finance/quote?symbols=0388.HK&'
      # header: GUC=AQEBCAFmSiJmckIglASv&s=AQAAAJC_ypzU&g=ZkjSUA; A1=d=AQABBENr5WUCEKiBVZz9GbtMFcqFYhI79zcFEgEBCAEiSmZyZliia3sB_eMBAAcIQ2vlZRI79zc&S=AQAAAiH1tm001OB4VgQ3VgYqF9c; A3=d=AQABBENr5WUCEKiBVZz9GbtMFcqFYhI79zcFEgEBCAEiSmZyZliia3sB_eMBAAcIQ2vlZRI79zc&S=AQAAAiH1tm001OB4VgQ3VgYqF9c; axids=gam=y-RS5zoTVE2uJ4u.swFni_2Oj0El0tkCmv~A&dv360=eS1FUUp5cm9sRTJ1SF9zVTFJSU1IeTZfYkZROEhKR05TX35B&ydsp=y-8YoEcNZE2uKMB2_yjha2b6YVaiGYTmUX~A&tbla=y-e.wB.EdE2uLRQSjTi1._jNbz6_eqhtIQ~A; tbla_id=0456be97-1b31-4577-830a-d12ea62cfd2a-tuctcdf3b91; A1S=d=AQABBENr5WUCEKiBVZz9GbtMFcqFYhI79zcFEgEBCAEiSmZyZliia3sB_eMBAAcIQ2vlZRI79zc&S=AQAAAiH1tm001OB4VgQ3VgYqF9c; cmp=t=1718613188&j=0&u=1---; gpp=DBAA; gpp_sid=-1; cto_bundle=pPoONl9FVWolMkZVaG5NMlh3a3JEY05XUGROd2RVV3c3SVN1NDJYS29aZEt0ME44MXZlNzBYN2d3MGVuczJ1a29DJTJGJTJCTWRTcDJFQmQwRGJDRDk5V1UxTDAxY3VZRFNjTVc3RWlEcjJhJTJCYmxtaWE5cVdZZEdaMDIlMkJXclhPVkZMb2Jxem1UZGZ2R3pSS3FLJTJCOHN6Rmh3MFA1ZUNWN0ElM0QlM0Q
 

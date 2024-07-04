@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymyleaf.org">
+
+<head>
+  <title>Hong Kong Stock Data</title>
+  <!--<style>
+    body {
+        background-image: "images.jpeg";
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 100vh; 
+        margin: 0; 
+    }
+</style> -->
+  <style>
+    .form-control{
+      border-radius: 0.5rem;
+      border: 1px solid #2200ff;
+    }
+    .test-table{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th,
+    td{
+      padding: 0.5rem;
+      border: 1px solid #0c0c0c;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1 >Stock List</h1>
+</body>
+<table class="test-table">
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Full Exchange Name</th>
+      <th>52Week High </th>
+      <th>52Week Low </th>
+      <th>Current Price (HK)</th>
+    </tr>
+    <tr></tr>
+    <tbody>
+     <!--Loop--> 
+     <!--<tr th:each="coinData : ${coinDataList}" class="coinRow">
+        <td><img th:src="${coinData.image}" alt="Coin Image" height="30"></td>
+        <td th:text="${coinData.id}"></td>
+        <td th:text="${coinData.currentPrice}"></td>
+      </tr> -->
+        <td><a href="/realtime">0388.HK</a></td>
+        <td>HKE</td>
+        <td>250</td>  <!--getData-->
+        <td>250</td>  
+        <td>250</td>  <!--getDailyData-->
+      </tr>
+    </tbody>
+  </table>
+  </thead>
+</html>

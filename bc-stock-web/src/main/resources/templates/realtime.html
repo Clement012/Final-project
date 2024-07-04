@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!-- <title>5-Minute Stock Price Chart</title> -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/stock.js"></script>
+  <script src="https://code.highcharts.com/modules/series-label.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<title>0388.HK Stock Data</title>
+  
+  <style> 
+  .bid-ask-table { 
+    width: 500px; 
+    height: 100px;
+    border-collapse: collapse; 
+    font-size: 24px; font-weight: 
+    bold; 
+    } 
+  .bid-ask-table th, 
+  .bid-ask-table td { 
+    padding: 10px; 
+    border: 2px solid #000; 
+    text-align: center;
+    } 
+  .bid-ask-table th { 
+    background-color: #333; 
+    color: #fff; 
+  } 
+  .bid-ask-table .bid { 
+    color: blue; } 
+  .bid-ask-table .ask { 
+    color: red; } 
+  .setting-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+  .setting-table th,
+  .setting-table td {
+    padding: 5px;
+    border: 1px solid #001e45;
+    text-align: center;
+  }
+  .setting-table th {
+    background-color: #ffffff;
+    color: #000000;
+  }
+    </style> 
+
+    <table class="bid-ask-table"> 
+      <thead> 
+        <tr> 
+          <th>Bid</th> 
+          <th>Ask</th> 
+          <th>Setting</th>
+        </tr> 
+      </thead> 
+      <tbody> 
+        <tr th:each="data : ${bidasks}"> 
+          <td class="bid" th:text="${data.bid}"></td> 
+          <td class="ask" th:text="${data.ask}"></td> 
+          <td rowspan="4">
+            <table class="setting-table">
+                <tr>
+                    <th>Minute</th>
+                    <td><a href="/realtime">5-Min</a></td>
+                </tr>
+                <tr>
+                    <th>Daily</th>  
+                    <td>1-Month</td>  <!--link-->
+                </tr>
+                <tr>
+                    <th>Weekly</th>
+                    <td>1-Year</td>  <!--link-->
+                </tr>
+                <tr>
+                    <th>Monthly</th>
+                    <td><a href="/history">5-Years</a></td>  <!--link-->
+                </tr>
+            </table>
+        </td>
+        </tr> 
+      </tbody> 
+    </table>
+  
+<body>
+  <!-- <h1>5-Minute Stock Price Chart</h1> -->
+  <div id="stockChart" style="width: 700px; height: 600px;"></div>
+  <script type="text/javascript">
+    function updateChart(){
+  const fetchFiveMinutes = fetch('/five-minute')
+    .then(response => response.json());
+
+  const fetchMA = fetch('/ma')
+    .then(response => response.json());
+
+  Promise.all([fetchFiveMinutes, fetchMA]).then(([five, ma]) => {
+    const fiveMin = five.map(item => [new Date(item.time).getTime(), item.regularMarketPrice]);
+    const mA = ma.map(item => [new Date(item.time).getTime(), item.averagePrice]);
+
+    Highcharts.stockChart('stockChart', {
+      rangeSelector: {
+        selected: 1
+      },
+      title: {
+        text: '5-Minute Stock Price'
+      },
+      time: {
+        timezone: 'Asia/Hong_Kong'
+      },
+      series: [
+        {
+          name: 'Price',
+          data: fiveMin,
+          tooltip: {
+            valueDecimals: 2
+          }
+        },
+        {
+          name: 'MA',
+          data: mA,
+          tooltip: {
+            valueDecimals: 2
+          }
+        }
+      ]
+    });
+  }).catch(error => {
+    console.error('Error fetching data:', error);
+  });
+}
+function updateBidAsk() {
+      fetch('/bidask')
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            const bidCell = document.querySelector('.bid');
+            const askCell = document.querySelector('.ask');
+            bidCell.textContent = data[0].bid;
+            askCell.textContent = data[0].ask;
+          }
+        }).catch(error => {
+          console.error('Error fetching bid-ask data:', error);
+        });
+    }
+    function updateData() {
+      updateChart();
+      updateBidAsk();
+    }
+
+    updateData();
+    setInterval(updateData, 10000);
+  </script>
+
+</html> 

@@ -1,5 +1,6 @@
 package com.example.bc_stock_web.mapper;
 
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 import com.example.bc_stock_web.dto.StockBidAskDTO;
 import com.example.bc_stock_web.model.Stock.QuoteResponse.Result;
@@ -10,6 +11,7 @@ public class StockBidAskMapper {
     return StockBidAskDTO.builder()
       .ask(result.getAsk())
       .bid(result.getBid())
+      .timeNow(LocalDateTime.now())
       .build();
   }
 }

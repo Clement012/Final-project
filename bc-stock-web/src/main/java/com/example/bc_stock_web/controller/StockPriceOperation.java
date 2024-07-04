@@ -23,4 +23,8 @@ public interface StockPriceOperation {
 
    @GetMapping(value = "/bidask")
    List<StockBidAskDTO> getBidAsks();
+
+   static String test(){
+      return "hello";
+   }
 }

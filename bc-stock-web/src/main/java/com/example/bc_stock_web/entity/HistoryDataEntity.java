@@ -32,5 +32,6 @@ public class HistoryDataEntity {
   private double high;
   private double adjclose;
   private Long volume;
+  // private double regularMarketPrice;
   
 }

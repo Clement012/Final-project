@@ -1,6 +1,6 @@
 package com.example.bc_stock_web.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +12,12 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockBidAskDTO {
-  private double bid;
-  private double ask;
-  private LocalDateTime timeNow; 
+public class CandleStickDTO {
+  private Long timestamp; 
+  private LocalDate date;
+  private double open;  
+  private double close;
+  private double low;
+  private double high;
+  private Long volume;
 }

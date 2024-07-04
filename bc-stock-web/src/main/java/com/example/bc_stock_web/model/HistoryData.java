@@ -17,6 +17,14 @@ import lombok.Setter;
 public class HistoryData {
 
   private Chart chart;
+
+//   public void merge(HistoryData other) {
+//     if (this.chart == null) {
+//         this.chart = other.chart;
+//     } else {
+//         this.chart.merge(other.chart);
+//     }
+// }
   
   @Getter
   @Setter

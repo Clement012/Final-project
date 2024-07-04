@@ -1,6 +1,16 @@
 server :
   port : 8104
 
+api:
+  yahoo-finance:
+    domain: 'query1.finance.yahoo.com'
+    history:
+      base-path: 'v8/finance/chart'
+      endpoint: '/0388.HK,/0005.HK,/0700.HK'
+     #  hke: '/0388.HK'
+     #  hsbc: '/0005.HK'
+     #  tcl: '/0700.HK'
+
 database:
   db-name: "bc-stock-web"
 

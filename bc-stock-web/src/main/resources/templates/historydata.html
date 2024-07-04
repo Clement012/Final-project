@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>0388.HK Stock History</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/stock.js"></script>
+  <script src="https://code.highcharts.com/modules/series-label.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+
+<body>
+  <h1>History Chart</h1>
+  <div id="stockChart" style="width: 1500px; height: 600px;"></div>
+  <script type="text/javascript">
+    fetch('/candle')
+      .then(response => response.json())
+      .then(data => {
+        const candlestickData = data.map(item => [
+          new Date(item.date).getTime(), // timestamp
+          item.open, // open
+          item.high, // high
+          item.low,  // low
+          item.close // close
+        ]);
+
+        Highcharts.stockChart('stockChart', {
+          rangeSelector: {
+            selected: 1
+          },
+          title: {
+            text: 'History'
+          },
+          time: {
+            timezone: 'Asia/Hong_Kong'
+          },
+          xAxis: {
+            type: 'datetime',
+            tickInterval: 24 * 3600 * 1000, // 1 day
+            labels: {
+              formatter: function () {
+                return Highcharts.dateFormat('%e %b \'%y', this.value);
+              },
+              rotation: -45 // Rotate labels to prevent overlap
+            }
+          },
+          series: [{
+            type: 'candlestick',
+            name: 'Stock Price',
+            data: candlestickData,
+            tooltip: {
+              valueDecimals: 2
+            },
+            dataGrouping: {
+              enabled: false // Disable data grouping
+            }
+          }]
+        });
+      });
+  </script>
+</body>
+
+</html>

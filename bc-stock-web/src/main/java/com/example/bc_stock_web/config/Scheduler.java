@@ -16,30 +16,26 @@ public class Scheduler {
   @Autowired
   private StockService stockService;
 
-  @Autowired
-  private HistoryService historyService;
+  // @Autowired
+  // private HistoryService historyService;
   
   @Scheduled(cron = "0 30-59/5 9 ? * MON-FRI")
-  @Scheduled(cron = "0 */5 10-11,13-15 ? * MON-FRI")
+  @Scheduled(cron = "0 */5 10-16 ? * MON-FRI")
   public void getData(){
     stockPriceOperation.getStockData();
   }
 
   @Scheduled(cron = "0 30-59/5 9 ? * MON-FRI")
-  @Scheduled(cron = "0 */5 10-11,13-15 ? * MON-FRI")
+  @Scheduled(cron = "0 */5 10-16 ? * MON-FRI")
   public void saveData(){
     stockService.savePrice();
     System.out.println("updated");
   }
 
-  // @Scheduled(cron = "0 55 8 ? * MON-FRI")  //clear every date
-  // public void deleteData(){
-  //   stockService.clearData();
-  // }
-
-  @Scheduled(fixedDelay = 30000)
-  public void saveHistory(){
-    historyService.saveData();
-    System.out.println("ok");
+  @Scheduled(cron = "0 55 8 ? * MON-FRI")  //clear every date
+  public void deleteData(){
+    stockService.clearData();
   }
+
+  
 }
