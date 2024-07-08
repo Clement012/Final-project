@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StockDataEntity {
+public class RealTimeEntity {
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +28,9 @@ public class StockDataEntity {
   private double averagePrice;
   private String type;
   private LocalDate date;
+  private Long timestamp;
+  private String symbol;
+  private double bid;
+  private double ask;
 
 }

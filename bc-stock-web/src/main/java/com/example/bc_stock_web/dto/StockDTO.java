@@ -17,10 +17,10 @@ public class StockDTO {
   private String symbol;
   private String regularMarketUnix; 
   private double regularMarketPrice;
+  private double regularMarketChange;
   private double regularMarketChangePercent;
   private double bid;
   private double ask;
-  private int bidSize;
-  private int askSize;
   private LocalDateTime timeNow; //
+  private String longName;
 }

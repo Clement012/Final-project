@@ -1,9 +1,8 @@
-  
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-   <title>5-Minute Stock Price Chart</title> 
+  <!-- <title>5-Minute Stock Price Chart</title> -->
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/modules/stock.js"></script>
   <script src="https://code.highcharts.com/modules/series-label.js"></script>
@@ -13,16 +12,13 @@
 </head>
 
 <body>
-   <h1>5-Minute Stock Price Chart</h1> 
+  <!-- <h1>5-Minute Stock Price Chart</h1> -->
   <div id="stockChart" style="width: 500px; height: 600px;"></div>
   <script type="text/javascript">
-    function updateChart(){
-    fetch('/try')
+    fetch('/five')
       .then(response => response.json())
       .then(data => {
-        const processedData = data.map(item => [new Date(item.time).getTime(), item.regularMarketPrice]);
-
-    
+        const processedData = data.map(item => [new Date(item.timestamp).getTime(), item.price]);
 
         Highcharts.stockChart('stockChart', {
           rangeSelector: {
@@ -51,11 +47,7 @@
           }]
         });
       });
-    }
-    updateChart();
-    setInterval(updateChart, 3000);
-
   </script>
-</body> 
+</body>
 
-</html> 
+</html>

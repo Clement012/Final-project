@@ -17,10 +17,10 @@ public class StockMapper {
       .regularMarketPrice(result.getRegularMarketPrice())
       .regularMarketChangePercent(result.getRegularMarketChangePercent())
       .bid(result.getBid())
-      .bidSize(result.getBidSize())
       .ask(result.getAsk())
-      .askSize(result.getAskSize())
       .timeNow(LocalDateTime.now())
+      .longName(result.getLongName())
+      .regularMarketChange(result.getRegularMarketChange())
       .build();
   }
 }

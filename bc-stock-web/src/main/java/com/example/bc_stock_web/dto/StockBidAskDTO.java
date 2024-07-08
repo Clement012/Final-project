@@ -13,7 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StockBidAskDTO {
+  private String symbol;
   private double bid;
   private double ask;
   private LocalDateTime timeNow; 
+  
 }

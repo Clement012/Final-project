@@ -2,9 +2,11 @@ package com.example.bc_stock_web.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -16,16 +18,16 @@ import com.example.bc_stock_web.infra.UrlBuilder;
 import com.example.bc_stock_web.mapper.HistoryDataEntityMapper;
 import com.example.bc_stock_web.model.HistoryData;
 import com.example.bc_stock_web.repository.HistoryDataRepository;
-import com.example.bc_stock_web.service.MultiDataService;
+import com.example.bc_stock_web.service.HistoryDataService;
 
 @Service
-public class MultiDataServiceImpl implements MultiDataService{
+public class HistoryDataServiceImpl implements HistoryDataService{
 
   @Autowired
   private RestTemplate restTemplate;
 
   @Autowired
-  private HistoryDataEntityMapper historyDataEntityMapper;
+  private HistoryDataEntityMapper mapper;
 
   @Autowired
   private HistoryDataRepository historyDataRepository;
@@ -39,44 +41,12 @@ public class MultiDataServiceImpl implements MultiDataService{
   @Value("${api.yahoo-finance.history.endpoint}")
   private String[] endpoints;
 
-  // api:
-  // yahoo-finance:
-  //   domain: 'query1.finance.yahoo.com'
-  //   history:
-  //     base-path: 'v8/finance/chart'
-  //     endpoint: '/0388.HK'
-  //  #  hke: '/0388.HK'
-    //  #  hsbc: '/0005.HK'
-    //  #  tcl: '/0700.HK'
-
-//   @Override
-//   public HistoryData getData(){
-//     // String test = UrlBuilder.get(Scheme.HTTPS, domain, endpoint, basePath);
-//     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-//         queryParams.add("period1", "1420041600"); // 2015-01-01
-//         queryParams.add("period2", String.valueOf(System.currentTimeMillis()));  //now
-//         queryParams.add("interval", "1d");
-//         queryParams.add("events", "history");
-//     String url = UriComponentsBuilder.newInstance()
-//          .scheme("https")
-//          .host(domain)
-//          .path(basePath)
-//          .path(endpoint)
-//          .queryParams(queryParams)
-//          .toUriString();
-//      System.out.println("url=" + url);
-//     HistoryData historyData = restTemplate.getForObject(url, HistoryData.class);
-//     System.out.println("history" + historyData);
-//     return historyData;
-//     // return null;
-//  }
-
  @Override
   public void saveData(){
     List<HistoryData> hds = getDataList();
       for (HistoryData hd : hds){
             hd.getChart().getResult().stream().
-            map(r -> historyDataEntityMapper.map(r))
+            map(r -> mapper.map(r))
             .forEach(r -> historyDataRepository.saveAll(r));
       }
   }
@@ -93,8 +63,8 @@ public class MultiDataServiceImpl implements MultiDataService{
     public List<HistoryData> getDataList(){
     List<HistoryData> hd = new ArrayList<>();
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("period1", "1420041600"); // 2015
-        queryParams.add("period2", String.valueOf(System.currentTimeMillis()));  //now
+        queryParams.add("period1", "1577808000"); // 2020
+        queryParams.add("period2", "1719763200");//String.valueOf(System.currentTimeMillis()));  //now
         queryParams.add("interval", "1d");
         queryParams.add("events", "history");
     System.out.println("queryParams=" + queryParams);
@@ -106,7 +76,6 @@ public class MultiDataServiceImpl implements MultiDataService{
          .path(endpoint)
          .queryParams(queryParams)
          .toUriString();
-     System.out.println("url=" + url);
      try {
       HistoryData historyData = restTemplate.getForObject(url, HistoryData.class);
       System.out.println("history=" + historyData);
@@ -116,6 +85,15 @@ public class MultiDataServiceImpl implements MultiDataService{
       }
      }
      return hd;
+    }
+
+   @Override
+    public List<HistoryDataEntity> getHistoryEntity(String symbol) throws NotFoundException{
+      Optional<List<HistoryDataEntity>> entities = historyDataRepository.findBySymbol(symbol);
+      if (entities.isPresent()){
+        return entities.get();
+      }
+      throw new NotFoundException();
     }
 }
 

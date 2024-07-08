@@ -39,7 +39,9 @@ public class HistoryDataEntityMapper {
       entities.add(entity);
     });
 
-    return entities;
+    return entities; 
+  }
+}
     // entity.setSymbol(result.getMeta().getSymbol());
     // entity.setType("Daily");
     // entity.setTimestamp(result.getTimestamp());
@@ -51,7 +53,7 @@ public class HistoryDataEntityMapper {
     // entity.setVolume(null);
     // entity.setAdjclose(result.getIndicators().getAdjclose());
     // return entity;
-  }
+  
   // public HistoryDataEntity map(HistoryData historyData){
   //   HistoryDataEntity entity = new HistoryDataEntity();
   //   List<Result> results = historyData.getChart().getResult();
@@ -97,6 +99,6 @@ public class HistoryDataEntityMapper {
   //   entity.setDate(null);
   //   return entity;
   // }
-}
+
 
 // 

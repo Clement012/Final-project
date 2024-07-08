@@ -9,6 +9,7 @@ import com.example.bc_stock_web.model.Stock.QuoteResponse.Result;
 public class StockBidAskMapper {
   public StockBidAskDTO map(Result result){
     return StockBidAskDTO.builder()
+      .symbol(result.getSymbol())
       .ask(result.getAsk())
       .bid(result.getBid())
       .timeNow(LocalDateTime.now())

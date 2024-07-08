@@ -3,158 +3,209 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <!-- <title>5-Minute Stock Price Chart</title> -->
+  <title>Real Time Stock Data</title>
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/modules/stock.js"></script>
   <script src="https://code.highcharts.com/modules/series-label.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <style>
+    .bid-ask-table {
+      width: 500px;
+      height: 100px;
+      border-collapse: collapse;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .bid-ask-table th,
+    .bid-ask-table td {
+      padding: 10px;
+      border: 2px solid #000;
+      text-align: center;
+    }
+
+    .bid-ask-table th {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .bid-ask-table .bid {
+      color: blue;
+    }
+
+    .bid-ask-table .ask {
+      color: red;
+    }
+
+    .setting-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+    }
+
+    .setting-table th,
+    .setting-table td {
+      padding: 5px;
+      border: 1px solid #001e45;
+      text-align: center;
+    }
+
+    .setting-table th {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    .home-link {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+  </style>
 </head>
-<title>0388.HK Stock Data</title>
-  
-  <style> 
-  .bid-ask-table { 
-    width: 500px; 
-    height: 100px;
-    border-collapse: collapse; 
-    font-size: 24px; font-weight: 
-    bold; 
-    } 
-  .bid-ask-table th, 
-  .bid-ask-table td { 
-    padding: 10px; 
-    border: 2px solid #000; 
-    text-align: center;
-    } 
-  .bid-ask-table th { 
-    background-color: #333; 
-    color: #fff; 
-  } 
-  .bid-ask-table .bid { 
-    color: blue; } 
-  .bid-ask-table .ask { 
-    color: red; } 
-  .setting-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-  }
-  .setting-table th,
-  .setting-table td {
-    padding: 5px;
-    border: 1px solid #001e45;
-    text-align: center;
-  }
-  .setting-table th {
-    background-color: #ffffff;
-    color: #000000;
-  }
-    </style> 
 
-    <table class="bid-ask-table"> 
-      <thead> 
-        <tr> 
-          <th>Bid</th> 
-          <th>Ask</th> 
-          <th>Setting</th>
-        </tr> 
-      </thead> 
-      <tbody> 
-        <tr th:each="data : ${bidasks}"> 
-          <td class="bid" th:text="${data.bid}"></td> 
-          <td class="ask" th:text="${data.ask}"></td> 
-          <td rowspan="4">
-            <table class="setting-table">
-                <tr>
-                    <th>Minute</th>
-                    <td><a href="/realtime">5-Min</a></td>
-                </tr>
-                <tr>
-                    <th>Daily</th>  
-                    <td>1-Month</td>  <!--link-->
-                </tr>
-                <tr>
-                    <th>Weekly</th>
-                    <td>1-Year</td>  <!--link-->
-                </tr>
-                <tr>
-                    <th>Monthly</th>
-                    <td><a href="/history">5-Years</a></td>  <!--link-->
-                </tr>
-            </table>
-        </td>
-        </tr> 
-      </tbody> 
-    </table>
-  
 <body>
-  <!-- <h1>5-Minute Stock Price Chart</h1> -->
+  <div class="dropdown-container">
+    <label for="stock-select">StockNo</label>
+    <select id="stock-select" class="dropdown" onchange="updateData()">
+      <option value="-">-</option>
+      <option value="0005.HK">0005.HK</option>
+      <option value="0011.HK">0011.HK</option>
+      <option value="0066.HK">0066.HK</option>
+      <option value="0388.HK">0388.HK</option>
+      <option value="0700.HK">0700.HK</option>
+      <option value="0823.HK">0823.HK</option>
+      <option value="0941.HK">0941.HK</option>
+      <option value="1810.HK">1810.HK</option>
+      <option value="3690.HK">3690.HK</option>
+      <option value="9988.HK">9988.HK</option>
+    </select>
+  </div>
+
+  <table id="bid-ask-table" class="bid-ask-table">
+    <thead>
+      <tr>
+        <th>Bid</th>
+        <th>Ask</th>
+        <th>History</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="bid"></td>
+        <td class="ask"></td>
+        <td class="Link"><a href="#" target="_blank">Link</a></td>
+      </tr>
+    </tbody>
+  </table>
+
   <div id="stockChart" style="width: 700px; height: 600px;"></div>
+
   <script type="text/javascript">
-    function updateChart(){
-  const fetchFiveMinutes = fetch('/five-minute')
-    .then(response => response.json());
+    function fetchStockData(symbol) {
+      return fetch(`/five-minute/${symbol}`)
+        .then(response => response.json());
+    }
 
-  const fetchMA = fetch('/ma')
-    .then(response => response.json());
+    function fetchMAData(symbol) {
+      return fetch(`/ma/${symbol}`)
+        .then(response => response.json());
+    }
 
-  Promise.all([fetchFiveMinutes, fetchMA]).then(([five, ma]) => {
-    const fiveMin = five.map(item => [new Date(item.time).getTime(), item.regularMarketPrice]);
-    const mA = ma.map(item => [new Date(item.time).getTime(), item.averagePrice]);
+    function updateChart(symbol) {
+      Promise.all([fetchStockData(symbol), fetchMAData(symbol)]).then(([five, ma]) => {
+        const fiveMin = five.map(item => [new Date(item.time).getTime(), item.regularMarketPrice]);
+        const mA = ma.map(item => [new Date(item.time).getTime(), item.averagePrice]);
 
-    Highcharts.stockChart('stockChart', {
-      rangeSelector: {
-        selected: 1
-      },
-      title: {
-        text: '5-Minute Stock Price'
-      },
-      time: {
-        timezone: 'Asia/Hong_Kong'
-      },
-      series: [
-        {
-          name: 'Price',
-          data: fiveMin,
-          tooltip: {
-            valueDecimals: 2
-          }
-        },
-        {
-          name: 'MA',
-          data: mA,
-          tooltip: {
-            valueDecimals: 2
-          }
-        }
-      ]
-    });
-  }).catch(error => {
-    console.error('Error fetching data:', error);
-  });
-}
-function updateBidAsk() {
-      fetch('/bidask')
+        Highcharts.stockChart('stockChart', {
+          rangeSelector: {
+            selected: 1
+          },
+          title: {
+            text: `${symbol} 5-Minute Stock Price`
+          },
+          time: {
+            timezone: 'Asia/Hong_Kong'
+          },
+          series: [
+            {
+              name: 'Price',
+              data: fiveMin,
+              tooltip: {
+                valueDecimals: 2
+              }
+            },
+            {
+              name: 'Moving Average',
+              data: mA,
+              tooltip: {
+                valueDecimals: 2
+              }
+            }
+          ]
+        });
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    }
+
+    function updateBidAsk(symbol) {
+      fetch(`/entitybidask/${symbol}`)
         .then(response => response.json())
         .then(data => {
           if (data.length > 0) {
             const bidCell = document.querySelector('.bid');
             const askCell = document.querySelector('.ask');
+            const linkCell = document.querySelector('.Link a');
             bidCell.textContent = data[0].bid;
             askCell.textContent = data[0].ask;
+            linkCell.href = `/history?symbol=${symbol}`;
           }
         }).catch(error => {
           console.error('Error fetching bid-ask data:', error);
         });
     }
+
     function updateData() {
-      updateChart();
-      updateBidAsk();
+      const stockSelect = document.getElementById('stock-select');
+      const selectedSymbol = stockSelect.value;
+
+      if (selectedSymbol !== '-') {
+        const url = new URL(window.location.href);
+        url.searchParams.set('symbol', selectedSymbol);
+        history.pushState({}, '', url);
+
+        updateChart(selectedSymbol);
+        updateBidAsk(selectedSymbol);
+      } else {
+        // Reset the chart and bid-ask values
+        Highcharts.stockChart('stockChart', {
+          title: {
+            text: '5-Minute Stock Price'
+          }
+        });
+        const bidCell = document.querySelector('.bid');
+        const askCell = document.querySelector('.ask');
+        bidCell.textContent = '';
+        askCell.textContent = '';
+        const linkCell = document.querySelector('.Link a');
+        linkCell.href = '#';
+      }
     }
 
-    updateData();
-    setInterval(updateData, 10000);
-  </script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const symbol = urlParams.get('symbol');
 
-</html> 
+      if (symbol) {
+        document.getElementById('stock-select').value = symbol;
+        updateData();
+      }
+
+      setInterval(updateData, 10000);
+    });
+  </script>
+</body>
+
+</html>
