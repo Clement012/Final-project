@@ -1,0 +1,22 @@
+server :
+  port : 8111
+
+api : 
+  localhostinstant: 
+    domain: 'localhost:8110'
+    path: 
+      info: 'datalist'
+      instant: 'instant'
+      bidask: 'bidask'
+      fivemin: 'fiveminute'
+      ma: 'ma'
+   
+   
+  localhosthistory:
+    domain: 'localhost:8110'
+    path: 
+      candle: 'candle'
+      data: 'historydatalist'
+      entity: 'historyentity'
+      
+    

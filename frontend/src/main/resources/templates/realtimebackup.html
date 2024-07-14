@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Real Time Stock Data</title>
+  <style>
+    .bid-ask-table {
+      width: 500px;
+      height: 100px;
+      border-collapse: collapse;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .bid-ask-table th,
+    .bid-ask-table td {
+      padding: 10px;
+      border: 2px solid #000;
+      text-align: center;
+    }
+
+    .bid-ask-table th {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .bid-ask-table .bid {
+      color: blue;
+    }
+
+    .bid-ask-table .ask {
+      color: red;
+    }
+
+    .setting-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+    }
+
+    .setting-table th,
+    .setting-table td {
+      padding: 5px;
+      border: 1px solid #001e45;
+      text-align: center;
+    }
+
+    .setting-table th {
+      background-color: #ffffff;
+      color: #000000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dropdown-container">
+    <label for="stock-select">StockNo</label>
+    <select id="stock-select" class="dropdown" onchange="redirect()">
+      <option value="-">-</option>
+      <option value="0005.HK">0005.HK</option>
+      <option value="0011.HK">0011.HK</option>
+      <option value="0066.HK">0066.HK</option>
+      <option value="0388.HK">0388.HK</option>
+      <option value="0700.HK">0700.HK</option>
+      <option value="0823.HK">0823.HK</option>
+      <option value="0941.HK">0941.HK</option>
+      <option value="1810.HK">1810.HK</option>
+      <option value="3690.HK">3690.HK</option>
+      <option value="9988.HK">9988.HK</option>
+    </select>
+  </div>
+
+  <table id="bid-ask-table" class="bid-ask-table">
+    <thead>
+      <tr>
+        <th>Bid</th>
+        <th>Ask</th>
+        <th>History</th>
+      </tr>
+    </thead>
+    <tbody id="bid-ask-body">
+      <!-- Data will be inserted here by JavaScript -->
+    </tbody>
+  </table>
+
+  <div id="stockChart" style="width: 700px; height: 600px;"></div>
+
+  <script type="text/javascript">
+    function redirect() {
+      const symbol = document.getElementById('stock-select').value;
+      if (symbol !== '-') {
+        window.location.href = `/realtime?symbol=${symbol}`;
+      }
+    }
+
+    function updateData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const symbol = urlParams.get('symbol');
+
+      if (symbol && symbol !== '-') {
+        fetchBidAskData(symbol).then(data => {
+          const tbody = document.getElementById('bid-ask-body');
+          tbody.innerHTML = ''; // Clear existing data
+
+          data.forEach(item => {
+            const row = document.createElement('tr');
+
+            const bidCell = document.createElement('td');
+            bidCell.classList.add('bid');
+            bidCell.textContent = item.bid;
+            row.appendChild(bidCell);
+
+            const askCell = document.createElement('td');
+            askCell.classList.add('ask');
+            askCell.textContent = item.ask;
+            row.appendChild(askCell);
+
+            const historyCell = document.createElement('td');
+            historyCell.classList.add('Link');
+            const link = document.createElement('a');
+            link.href = `/history?symbol=${symbol}`;
+            link.target = '_blank';
+            link.textContent = 'Link';
+            historyCell.appendChild(link);
+            row.appendChild(historyCell);
+
+            tbody.appendChild(row);
+          });
+        });
+      }
+    }
+
+    function fetchBidAskData(symbol) {
+      return fetch(`/realtime?symbol=${symbol}`)
+        .then(response => response.json());
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const symbol = urlParams.get('symbol');
+
+      if (symbol) {
+        document.getElementById('stock-select').value = symbol;
+        updateData();
+      }
+    });
+  </script>
+</body>
+
+</html>
