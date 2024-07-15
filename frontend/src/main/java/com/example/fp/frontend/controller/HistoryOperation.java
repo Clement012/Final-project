@@ -17,4 +17,8 @@ public interface HistoryOperation {
 
   @GetMapping (value = "/historyentity/{symbol}")
   List<HistoryEntity> getHistoryEntity(@PathVariable String symbol);
+
+  static String test(){
+    return "Hello";
+  }
 }

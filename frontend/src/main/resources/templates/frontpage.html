@@ -1,61 +1,82 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"> 
 
 <head>
   <title>Hong Kong Stock Data</title>
-  <style>
-    /* .app {
-      background-image: url('~@/img/images.jpeg');
-     } */
-
-    .form-control{
-      border-radius: 0.5rem;
-      border: 1px solid #2200ff;
-    }
-    .test-table{
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th,
-    td{
-      padding: 0.5rem;
-      border: 1px solid #0c0c0c;
-      text-align: left;
-    }
-  </style>
 </head>
+<style>
+.test-table{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+th, td{
+  padding: 0.5rem;
+  border: 1px solid #000000;
+  text-align: left;
+}
+#datetime {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+</style>
 <body>
-  <h1 >Stock List</h1>
-</body>
-<table class="test-table">
-  <thead>
-    <tr>
-      <th>Symbol</th>
-      <th>Full Exchange Name</th>
-      <th>Price(Now)</th>
-      <th>Market Change</th>
-      <th>Percent Change</th>
-      <th>Market Cap</th>
-      <th>Volume</th>
-    </tr>
-    <tr></tr>
+  <h1>Stock List</h1>
+  <div id="datetime"></div>
+  <table class="test-table">
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Full Exchange Name</th>
+        <th>Price(Now)</th>
+        <th>Market Change</th>
+        <th>Percent Change</th>
+        <th>Market Cap</th>
+        <th>Volume</th>
+      </tr>
+    </thead>
     <tbody>
-        <tr th:each="stock : ${stocks}">
-          <td>
-            <a th:href="@{/realtime(symbol=${stock.symbol})}" th:text="${stock.symbol}"></a>
-          </td>
+      <tr th:each="stock : ${stocks}">
+        <td>
+          <a th:href="@{/realtime(symbol=${stock.symbol})}" th:text="${stock.symbol}"></a>
+        </td>
         <td th:text="${stock.longName}"></td>
         <td th:text="${#numbers.formatDecimal(stock.regularMarketPrice, 0, 2)}"></td>
         <td th:text="${stock.regularMarketChange >= 0 ? '$' + #numbers.formatDecimal(stock.regularMarketChange, 1, 2) : '-$' + #numbers.formatDecimal(-stock.regularMarketChange, 1, 2)}"
-          th:style="${stock.regularMarketChange >= 0 ? 'color:green' : 'color:red'}"></td>
-      <td th:text="${#numbers.formatDecimal(stock.regularMarketChangePercent, 1, 2) + '%'}"
-          th:style="${stock.regularMarketChange >= 0 ? 'color:green' : 'color:red'}"></td>
-          <td th:text="${stock.marketCap}"></td>
-          <td th:text="${stock.regularMarketVolume}"></td>
+            th:style="${stock.regularMarketChange >= 0 ? 'color:green' : 'color:red'}"></td>
+        <td th:text="${#numbers.formatDecimal(stock.regularMarketChangePercent, 1, 2) + '%'}"
+            th:style="${stock.regularMarketChange >= 0 ? 'color:green' : 'color:red'}"></td>
+        <td th:text="${stock.marketCap}"></td>
+        <td th:text="${stock.regularMarketVolume}"></td>
       </tr>
     </tbody>
   </table>
-  </thead>
+  <script type="text/javascript">
+    function updateDateTime() {
+      const now = new Date();
+      const year = String(now.getFullYear());
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const formattedDateTime = `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
+      document.getElementById('datetime').textContent = formattedDateTime;
+    }
+    
+    // Refresh the page every 10 seconds
+    setInterval(function() {
+    window.location.reload();
+    }, 10000);
+    
+    // Update the date and time every second
+    setInterval(updateDateTime, 1000);
+    
+    // Initial call to display the current date and time immediately
+    window.onload = updateDateTime;
+    </script>
+</body>
 </html>

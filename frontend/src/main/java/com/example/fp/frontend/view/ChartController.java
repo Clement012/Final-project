@@ -24,16 +24,4 @@ public class ChartController {
     model.addAttribute("bidasks", bidAsks);
     return "realtime";
   }
-  // @GetMapping(value = "/realtime")
-  // public List<BidAsk> realtime(@RequestParam("symbol") String symbol) {
-  //   return realTimeOperation.getBidAsks(symbol);
-  // }
-
-  //   @GetMapping(value = "/realtime")
-  // public List<BidAsk> realtime(@RequestParam("symbol") String symbol) {
-  //   List<BidAsk> allBidAsks = realTimeOperation.getBidAsks(symbol);
-  //   return allBidAsks.stream()
-  //                    .filter(bidAsk -> bidAsk.getSymbol().equals(symbol))
-  //                    .collect(Collectors.toList());
-  // }
 }
