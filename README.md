@@ -16,6 +16,8 @@ Frontend:
 
 -Frontend : Basic html/css/javascript
 
-Link: http://ec2-3-27-15-152.ap-southeast-2.compute.amazonaws.com:8111/frontpage
+<!-- Link: http://ec2-3-27-15-152.ap-southeast-2.compute.amazonaws.com:8111/frontpage -->
 
 ![alt text](<img/Final Project.png>)
+
+-ToDo: Vue.js
