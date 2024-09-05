@@ -14,6 +14,6 @@ public class ViewHistoryController {
   @GetMapping(value = "/history")
   public String historydata(@RequestParam String symbol,Model model){
     model.addAttribute("symbol", symbol);
-    return "historydata";  
+    return "historydata"; 
   }
 }

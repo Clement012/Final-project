@@ -4,6 +4,7 @@
 
 <head>
   <title>Real Time Stock Data</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/realtime.css}">
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/modules/stock.js"></script>
   <script src="https://code.highcharts.com/modules/series-label.js"></script>
@@ -11,53 +12,6 @@
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
-<style>
-  .bid-ask-table {
-  width: 500px;
-  height: 100px;
-  border-collapse: collapse;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.bid-ask-table th,
-.bid-ask-table td {
-  padding: 10px;
-  border: 2px solid #000;
-  text-align: center;
-}
-
-.bid-ask-table th {
-  background-color: #333;
-  color: #fff;
-}
-
-.bid-ask-table .bid {
-  color: blue;
-}
-
-.bid-ask-table .ask {
-  color: red;
-}
-
-.setting-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-}
-
-.setting-table th,
-.setting-table td {
-  padding: 5px;
-  border: 1px solid #001e45;
-  text-align: center;
-}
-
-.setting-table th {
-  background-color: #ffffff;
-  color: #000000;
-}
-</style>
 <body>
   <div class="dropdown-container">
     <label for="stock-select">StockNo</label>
@@ -95,112 +49,7 @@
   </table>
 
   <div id="stockChart" style="width: 700px; height: 600px;"></div>
-
-  <script type="text/javascript">
-    function fetchStockData(symbol) {
-  return fetch(`/fiveminute/${symbol}`)
-    .then(response => response.json());
-}
-
-function fetchMAData(symbol) {
-  return fetch(`/ma/${symbol}`)
-    .then(response => response.json());
-}
-
-function updateChart(symbol) {
-  Promise.all([fetchStockData(symbol), fetchMAData(symbol)]).then(([five, ma]) => {
-    
-    const fiveMin = five.map(item => [new Date(item.time).getTime(), item.regularMarketPrice]);
-    const mA = ma.map(item => [new Date(item.time).getTime(), item.averagePrice]);
-
-    Highcharts.stockChart('stockChart', {
-      rangeSelector: {
-        selected: 1
-      },
-      title: {
-        text: `${symbol} 5-Minute Stock Price`
-      },
-      time: {
-        timezone: 'Asia/Hong_Kong'
-      },
-      series: [
-        {
-          name: 'Price',
-          data: fiveMin,
-          tooltip: {
-            valueDecimals: 2
-          }
-        },
-        {
-          name: 'Moving Average',
-          data: mA,
-          tooltip: {
-            valueDecimals: 2
-          }
-        }
-      ]
-    });
-  }).catch(error => {
-    console.error('Error fetching data:', error);
-  });
-}
-
-function updateBidAsk(symbol) {
-  fetch(`/bidask/${symbol}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.length > 0) {
-        const bidCell = document.querySelector('.bid');
-        const askCell = document.querySelector('.ask');
-        const linkCell = document.querySelector('.Link a');
-        bidCell.textContent = data[0].bid;
-        askCell.textContent = data[0].ask;
-        linkCell.href = `/history?symbol=${symbol}`;
-      }
-    }).catch(error => {
-      console.error('Error fetching bid-ask data:', error);
-    });
-}
-
-function updateData() {
-  const stockSelect = document.getElementById('stock-select');
-  const selectedSymbol = stockSelect.value;
-
-  if (selectedSymbol !== '-') {
-    const url = new URL(window.location.href);
-    url.searchParams.set('symbol', selectedSymbol);
-    history.pushState({}, '', url);
-
-    updateChart(selectedSymbol);
-    updateBidAsk(selectedSymbol);
-  } else {
-    // Reset the chart and bid-ask values
-    Highcharts.stockChart('stockChart', {
-      title: {
-        text: '5-Minute Stock Price'
-      }
-    });
-    const bidCell = document.querySelector('.bid');
-    const askCell = document.querySelector('.ask');
-    bidCell.textContent = '';
-    askCell.textContent = '';
-    const linkCell = document.querySelector('.Link a');
-    linkCell.href = '#';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const symbol = urlParams.get('symbol');
-
-  if (symbol) {
-    document.getElementById('stock-select').value = symbol;
-    updateData();
-  }
-
-  setInterval(updateData, 10000);
-});
-  </script>
+  <script th:src="@{/js/realtime.js}"></script>
 </body>
 
 </html>

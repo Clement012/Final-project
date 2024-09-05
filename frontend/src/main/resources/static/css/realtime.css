@@ -1,0 +1,45 @@
+.bid-ask-table {
+  width: 500px;
+  height: 100px;
+  border-collapse: collapse;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.bid-ask-table th,
+.bid-ask-table td {
+  padding: 10px;
+  border: 2px solid #000;
+  text-align: center;
+}
+
+.bid-ask-table th {
+  background-color: #333;
+  color: #fff;
+}
+
+.bid-ask-table .bid {
+  color: blue;
+}
+
+.bid-ask-table .ask {
+  color: red;
+}
+
+.setting-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.setting-table th,
+.setting-table td {
+  padding: 5px;
+  border: 1px solid #001e45;
+  text-align: center;
+}
+
+.setting-table th {
+  background-color: #ffffff;
+  color: #000000;
+}
