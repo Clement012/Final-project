@@ -5,9 +5,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+
 import com.example.fp.backend.service.RealTimeService;
 
 @Configuration
@@ -75,4 +77,17 @@ public class YahooConnector {
     return crumb;
   }
 
+  static void print(){
+    for (int num = 1; num <= 11; num++){
+      if (num % 2 == 1){
+      System.out.println("*");
+      }
+      else{
+        
+      }
+    }
+  }
+ public static void main(String[] args) {
+  print();
+ }
 }

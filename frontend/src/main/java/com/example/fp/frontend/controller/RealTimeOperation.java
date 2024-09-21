@@ -19,7 +19,7 @@ public interface RealTimeOperation {
   @GetMapping(value = "/bidask/{symbol}")
   List<BidAsk> getBidAsks(@PathVariable String symbol);
 
- @GetMapping(value = "/fiveminute/{symbol}")
+  @GetMapping(value = "/fiveminute/{symbol}")
   List<RealTime> getPrice(@PathVariable String symbol);
 
   @GetMapping(value = "/ma/{symbol}")
