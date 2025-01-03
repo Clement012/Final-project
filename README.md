@@ -21,7 +21,6 @@ Frontend:
 <<<<<<< HEAD
 ![alt text](<img/Final Project.png>)
 =======
-![alt text](<img/Final Project.png>)
 
 -ToDo: Vue.js
->>>>>>> 0cf11372d36b780ff4076798ad798740558265b6
+
