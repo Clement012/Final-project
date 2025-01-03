@@ -18,7 +18,6 @@ Frontend:
 
 <!-- Link: http://ec2-3-27-15-152.ap-southeast-2.compute.amazonaws.com:8111/frontpage -->
 
-<<<<<<< HEAD
 ![alt text](<img/Final Project.png>)
 =======
 
