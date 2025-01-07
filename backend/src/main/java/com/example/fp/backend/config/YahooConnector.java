@@ -76,18 +76,4 @@ public class YahooConnector {
     }
     return crumb;
   }
-
-  static void print(){
-    for (int num = 1; num <= 11; num++){
-      if (num % 2 == 1){
-      System.out.println("*");
-      }
-      else{
-        
-      }
-    }
-  }
- public static void main(String[] args) {
-  print();
- }
 }

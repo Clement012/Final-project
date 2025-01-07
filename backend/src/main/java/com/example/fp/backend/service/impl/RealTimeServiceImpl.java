@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import com.example.fp.backend.config.YahooConnector;
 import com.example.fp.backend.entity.RealTimeEntity;
 import com.example.fp.backend.mapper.RealTimeEntityMapper;
@@ -50,6 +52,7 @@ public class RealTimeServiceImpl implements RealTimeService {
   @Value("${api.yahoo-finance.crumb}")
   private String crumbWord;
 
+  //https://query1.finance.yahoo.com/v1/test/getcrumb 
   @Override
   public List<InstantData> getInstant(){
     List<InstantData> instantdatas = new ArrayList<>();
@@ -57,6 +60,7 @@ public class RealTimeServiceImpl implements RealTimeService {
     String cookie = YahooConnector.getCookie();
     for (String endpoint : endpoints) {
       String url = String.format("https://%s%s%s%s", domain, endpoint, crumbWord, crumb);
+      System.out.println("url " + url);
     try {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Cookie", cookie);
