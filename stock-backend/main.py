@@ -1,30 +1,62 @@
 import requests
+import logging
 
-# def get_posts():
-#     url = 'https://jsonplaceholder.typicode.com/posts'
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger("RealTimeService")
 
-#     try:
-#         response = requests.get(url)
+class YahooConnector:
+    crumb = None
+    cookie = None
 
-#         if response.status_code == 200:
-#             posts = response.json()
-#             return posts
-#         else:
-#             print('Error:', response.status_code)
-#             return None
-#     except requests.exceptions.RequestException as e:
-#         print('Error:', e)
-#         return None
+    @classmethod
+    def set_cookie(cls):
+        try:
+            url = "https://fc.yahoo.com"
+            response = requests.get(url)
+            cls.cookie = response.headers.get("Set-Cookie")
+        except Exception as e:
+            log.debug("Failed to set cookie from http request. Intraday quote requests will most likely fail.", exc_info=e)
 
-# def main():
-#     posts = get_posts()
+    @classmethod
+    def set_crumb(cls):
+        response_text = ""
+        try:
+            url = "https://query1.finance.yahoo.com/v1/test/getcrumb"
+            headers = {
+                "Cookie": cls.cookie or "",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            }
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            response_text = response.text.strip()
+        except Exception as e:
+            log.debug("Failed to set crumb from http request. Intraday quote requests will most likely fail.", exc_info=e)
+        cls.crumb = response_text
 
-#     if posts:
-#         print('First Post Title:', posts[0]['title'])
-#         print('First Post Body:', posts[0]['body'])
-#     else:
-#         print('Failed to fetch posts from API.')
+    @classmethod
+    def reset_cookie_crumb(cls):
+        cls.set_cookie()
+        cls.set_crumb()
 
-# if __name__ == '__main__':
-#     main()
+    @classmethod
+    def get_cookie(cls):
+        if not cls.cookie:
+            cls.reset_cookie_crumb()
+        return cls.cookie
 
+    @classmethod
+    def get_crumb(cls):
+        if not cls.crumb:
+            cls.reset_cookie_crumb()
+        return cls.crumb
+
+    @classmethod
+    def print_crumb(cls):
+        # Make sure crumb is set before printing
+        if not cls.crumb:
+            cls.get_crumb()
+        print('crumb: ' + cls.crumb)  # Print crumb as requested
+
+if __name__ == "__main__":
+    YahooConnector.print_crumb()
