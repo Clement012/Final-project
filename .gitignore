@@ -1,0 +1,7 @@
+.venv
+stock-backend/_pycache_/
+stock-backend/Lib/
+stock-backend/Include/
+stock-backend/Scripts/
+stock-backend/__pycache__/yahoo_crumb.cpython-312.pyc
+stock-backend/Lib/site-packages/pip/_internal/configuration.py

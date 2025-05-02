@@ -56,15 +56,6 @@ class YahooConnector:
         if not cls.crumb:
             cls.get_crumb()
         print('crumb: ' + cls.crumb)  # Print crumb as requested
-        
-# utils/yahoo_crumb.py
 
-def get_yahoo_crumb():
-    # Your logic to get the Yahoo crumb
-    if __name__ == "__main__":
-        YahooConnector.print_crumb()
-        print(get_yahoo_crumb)
-    pass  # Replace with actual implementation
-
-# if __name__ == "__main__":
-#     YahooConnector.print_crumb()
+if __name__ == "__main__":
+    YahooConnector.print_crumb()
